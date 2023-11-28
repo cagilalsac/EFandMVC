@@ -1,0 +1,141 @@
+﻿@using DataAccess.Enums
+
+@model User
+@*Generated from Custom Template.*@
+@*Model namespace using directive should be added to _ViewImports.cshtml.*@
+
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-12">
+        <form asp-action="Create" autocomplete="off">
+		@* "autocomplete=off" tarayıcı cache'inden daha önce girilen form verilerinin gelmemesini sağlar *@
+
+		@Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="row mb-3">
+                <label asp-for="UserName" class="col-2 col-form-label"></label>
+				<div class="col-5">
+					<input asp-for="UserName" class="form-control" />
+					<span asp-validation-for="UserName" class="text-danger"></span>
+				</div>
+            </div>
+            <div class="row mb-3">
+                <label asp-for="Password" class="col-2 col-form-label"></label>
+				<div class="col-5">
+					<input asp-for="Password" class="form-control" type="password" />
+					@* 
+						input'un type'ını password yaptık ki şifreyi gizleyelim,
+						type yazılmazsa asp-for ile belirtilen model özelliğinin 
+						tipine göre input oluşturulur
+					*@
+
+					<span asp-validation-for="Password" class="text-danger"></span>
+				</div>
+            </div>
+            <div class="row mb-3">
+				<label asp-for="IsActive" class="col-2 col-form-label"></label>
+				<div class="col-5" style="padding-top: 7px;">
+					<input class="form-check-input" asp-for="IsActive" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label asp-for="BirthDate" class="col-2 col-form-label"></label>
+				<div class="col-5">
+					<input asp-for="BirthDate" class="form-control datetimepicker" type="text" />
+					@*
+						input'un class'ını datetimepicker ve type'ını text yaptık ki
+						input'u jQuery DateTimePicker CSS-JS kütüphanesi üzerinden
+						takvim'e dönüştürebilelim
+					*@
+
+					<span asp-validation-for="BirthDate" class="text-danger"></span>
+				</div>
+            </div>
+            <div class="row mb-3">
+                <label asp-for="Sex" class="col-2 col-form-label"></label>
+				<div class="col-5">
+					@* enum üzerinden drop down list oluşturma: *@
+					<select asp-for="Sex" class="form-select">
+						<option value="@((int)Sex.Woman)">@Sex.Woman</option>
+						<option value="@((int)Sex.Man)">@Sex.Man</option>
+					</select>
+
+					<span asp-validation-for="Sex" class="text-danger"></span>
+				</div>
+            </div>
+            <div class="row mb-3">
+                <label asp-for="RoleId" class="col-2 col-form-label"></label>
+				<div class="col-5">
+					<select asp-for="RoleId" class="form-select" asp-items="ViewBag.Roles">
+						<option value="">-- Select --</option>
+					</select>
+					<span asp-validation-for="RoleId" class="text-danger"></span>
+				</div>
+            </div>
+            <div class="row mb-3">
+				<div class="offset-2 col-5">
+					<input type="submit" value="Save" class="btn btn-primary" />
+					&nbsp;&nbsp;
+                    <button type="reset" class="btn btn-outline-primary">Reset</button>
+					&nbsp;&nbsp;
+					<a asp-action="Index">Back to List</a>
+				</div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* 
+	~/Views/Shared/_Layout.cshtml'deki RenderSectionAsync methodu tarafından sayfanın en altında
+	Scripts adındaki kısım yazdırılır ki ihtiyaç olabilecek CSS ve JS kütüphaneleri burada kullanılabilsin,
+	örneğin datetimepicker CSS class'lı input'u burada takvime dönüştüreceğiz,
+	sadece view'da ihtiyaç duyulan Javascript işlemleri section'da yapılmalıdır,
+	eğer tüm uygulamada kullanılma ihtiyacı varsa _Layout.cshtml içerisinde CSS ve JS kütüphaneleri
+	eklenebilir veya ihtiyaç duyulan Javascript kodları yazılabilir
+*@
+@section Scripts {
+	<!-- 
+		jQuery DateTimePicker CSS ve JS dosya referansları: 
+		~/wwwroot/lib klasörü fare ile sağ tıklanarak Add -> Client-Side Library
+		sol tıklandıktan sonra "jquery-datetimepicker" aratılarak projeye indirilebilir
+	-->
+	<!-- https://xdsoft.net/jqplugins/datetimepicker/ -->
+    <link href="~/lib/jquery-datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
+    <script src="~/lib/jquery-datetimepicker/jquery.datetimepicker.full.min.js"></script>
+
+	<script>
+		// HTML sayfasının tüm DOM elemanları yüklendikten sonra:
+		// 1. yöntem:
+		//$(document).ready(function () {
+		// 2. yöntem:
+		$(function () { 
+			// 1. yöntem: input . ile class üzerinden direkt DateTimePicker'a dönüştürülebileceği gibi
+			// $(".datetimepicker").datetimepicker();
+			// 2. yöntem: parametreler üzerinden de dönüştürme yapılabilir
+			$(".datetimepicker").datetimepicker({
+				// format: 'm/d/Y H:i:s', // tarih ve saatli İngilizce formatı
+				format: 'm/d/Y', // tarihli İngilizce formatı
+				timepicker: false // saatsiz takvim, saatin de gelmesi için true yapılmalı
+			});
+		});
+	</script>
+
+
+
+	<!-- 
+		Eğer server-side (sunucu-tabanlı) validasyon yerine client-side 
+		(Javascript üzerinden tarayıcı-tabanlı) validasyon yapılmak istenirse 
+		aşağıdaki jQuery Validation dosya referansları partial view (kısmi view)
+		ile eklenebilir:
+	-->
+	<partial name="_ValidationScriptsPartial" />
+}
+
+

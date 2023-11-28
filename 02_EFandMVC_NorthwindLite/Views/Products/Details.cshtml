@@ -1,0 +1,138 @@
+﻿@* View'ın model objesinin (Model) Product tipinde olduğunu belirtiyoruz. *@
+@model Product
+
+<h4>Product</h4>
+<hr />
+
+<h5>Product Information</h5>
+
+<!-- 
+    Genelde solda başlık sağda veri yapısı şekilnde detay kayıtlarının gösterimi için 
+    dl HTML tag'i içerisinde başlık için dt, veri içinse dd HTML tag'leri kullanılır. 
+-->
+<dl class="row">
+    <dt class="col-2"><!-- Bootstrap class'ı: 2 birim başlık için kullan. -->
+        ID
+    </dt>
+    <dd class="col-10"><!-- Bootstrap class'ı: 10 birim veri için kullan. -->
+        @Model.ProductId @* Product tipindeki Model objemiz üzerinden özellik verilerini yazdırıyoruz. *@
+    </dd>
+    <dt class="col-2">
+        Name
+    </dt>
+    <dd class="col-10">
+        @Model.ProductName 
+    </dd>
+    <dt class="col-2">
+        Unit Price
+    </dt>
+    <dd class="col-10">
+        @Model.UnitPrice
+    </dd>
+    <dt class="col-2">
+        Units in Stock
+    </dt>
+    <dd class="col-10">
+        @Model.UnitsInStock
+    </dd>
+    <dt class="col-2">
+        Discontinued
+    </dt>
+    <dd class="col-10">
+        @(Model.Discontinued ? "Yes" : "No")
+        @* Discontinued özelliği için ternary operator üzerinden değeri true ise Yes false ise No yazdırıyoruz. *@
+    </dd>
+</dl>
+<hr />
+
+<h5>Category Information</h5>
+<dl class="row">
+    <dt class="col-2">
+        Category
+    </dt>
+    <dd class="col-10">
+
+        @Model.Category?.CategoryName 
+        @* 
+            Ürün listesi veritabanından çekilerken eğer Include methodu ile Category referans özelliği 
+            üzerinden kategori bilgileri de sorguya dahil edilmezse (GetByFind action'ında olduğu gibi) 
+            Model'in Category özelliği null olacağından sonuna ? ekledik.
+        *@
+
+    </dd>
+</dl>
+<hr />
+
+<h5>Order Information</h5>
+<dl class="row">
+    <dt class="col-2">
+        Order Customers
+    </dt>
+    <dd class="col-10">
+
+        @* 
+            Eğer ürünün sipariş detay listesi (ürün (Product) ile sipariş (Order) arasındaki 
+            many to many ilişki entity tipindeki (OrderDetail) kolleksiyonu) dolu ise ki
+            bunu kontrol etmek zorundayız çünkü ürün listesi veritabanından çekilirken eğer 
+            Include methodu ile OrderDetails referans özelliği üzerinden sipariş detay bilgileri
+            de sorguya dahil edilmezse (GetByFind action'ında olduğu gibi) Model'in OrderDetails
+            özelliği null olacaktır. Razor üzerinden @{ ... }, @if (...){ ... }, @foreach (...){ ... }, vb.
+            kullanılarak süslü parantezler içerisinde bir veya daha çok kod satırı yazılabilir. 
+            Ancak her bir kod satırının sonunda ; kullanılmasına dikkat edilmelidir.
+        *@
+        @if (Model.OrderDetails is not null && Model.OrderDetails.Count > 0)
+        {
+            string orderCustomers = "";
+            string seperator = ", ";
+
+            <!-- 
+                1. yöntem: 
+                orderCustomers string'ini Model'in OrderDetails kolleksiyonundaki her bir OrderDetail
+                tipindeki elemanının CustomerId özelliği üzerinden ayraç ile oluşturduktan sonra 
+                orderCustomers'ın sonundaki ayraç üzerinden belirttiğimiz string'i temizliyoruz.
+            -->
+            <!-- orderCustomers string'inin oluşturulması: -->
+            <!-- 
+                Eğer OrderDetails üzerinden ulaştığımız Order'ların aynı CustomerId'leri çoklamasaydı
+                foreach (OrderDetail orderDetail in Model.OrderDetails) yazmamız yeterli olacaktı.
+                Ancak çokladığı için DistinctBy methodu ile çoklayan CustomerId'leri teke düşürüyoruz.
+            --> 
+            @*foreach (OrderDetail orderDetail in Model.OrderDetails.DistinctBy(orderDetails => orderDetails.Order.CustomerId))
+            {
+                orderCustomers += orderDetail.Order.CustomerId + seperator;
+            }
+            orderCustomers = orderCustomers.TrimEnd(seperator.ToCharArray());*@
+
+            <!--
+                2. yöntem:
+                orderCustomers string'ini string tipinin Join methodu üzerinden belirli bir ayraçla oluşturabiliriz.
+            -->
+            <!-- orderCustomers string'inin oluşturulması: -->
+            <!-- 
+                Eğer OrderDetails üzerinden ulaştığımız Order'ların aynı CustomerId'leri çoklamasaydı
+                string.Join(seperator, Model.OrderDetails.Select(orderDetail => orderDetail.CustomerId))
+                yazmamız yeterli olacaktı.
+                Ancak çokladığı için Distinct methodu ile çoklayan CustomerId'leri teke düşürüyoruz.
+            -->
+            orderCustomers = string.Join(seperator, Model.OrderDetails.Select(orderDetail => orderDetail.Order.CustomerId).Distinct());
+
+            <!-- 
+                Distinct veya DistinctBy methodları üzerinden çoklayan kayıtların teke düşürülmesi sağlanabilir.
+                1. yöntemdeki DistinctBy methodunda OrderDetails kolleksiyonu delegesi üzerinden Order.CustomerId 
+                özelliğini kullanarak CustomerId üzerinden çoklayan kayıtların teke düşürülmesini sağladık.
+                2. yöntemdeki Distinct methodunda elimizde Select ile projekte edilmiş string tipinde CustomerId 
+                kolleksiyonu olduğundan bu kolleksiyondaki çoklayan string tipindeki verilerin teke düşürülmesini sağladık.
+            -->
+
+            <!-- orderCustomers string'inin sonunda ; kullanılmayarak sayfaya yazdırılması: -->
+            @orderCustomers
+        }
+    </dd>
+</dl>
+
+<div>
+
+    <!-- Ürün listesi sayfasına Products controller'ının GetList action'ını çağırarak yönlendiren link. -->
+    <a href="/Products/GetList">Back to Product List</a>
+
+</div>

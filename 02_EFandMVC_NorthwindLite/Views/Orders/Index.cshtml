@@ -1,0 +1,196 @@
+﻿@model IEnumerable<OrderDTO>
+@*Generated from Custom Template.*@
+@*Model namespace using directive should be added to _ViewImports.cshtml.*@
+@* 
+    IEnumerable'ın OrderDTO tipini namespace'i olmadan kullanabilmek için OrderDTO'nun
+    namespace'i Views -> _ViewImports.cshtml altına using ile eklenmelidir.
+*@
+@* 
+    View'ın modeli olarak Order entity kolleksiyonu (IEnumerable<Order>) değil 
+    Orders controller'ının Index action'ından dönen OrderDTO kolleksiyonu 
+    (IEnumerable<OrderDTO>) kullanılmalıdır.
+*@
+
+@{
+    ViewData["Title"] = "Order List";
+}
+
+<!-- 
+    Yukarıda yaptığımız ViewData["Title"] ataması üzerinden Order List yazdıracak.
+    ViewData["Title"] aynı zamanda /Views/Shared/_Layout.cshtml'de
+    head -> title tag'inde kullanılmaktadır.
+-->
+<h1>@ViewData["Title"]</h1>
+
+<!-- 
+    Orders controller'ının Create, Edit ve Delete action'larında yapılan işlem sonucunun başarılı
+    mesajını bu view'da yazdırabilmek için action'larda atadığımız TempData["SuccessMessage"]'ı
+    eğer null değilse yeşil renkli bir p tag'ine yazdırıyoruz.
+-->
+@if (TempData["SuccessMessage"] != null)
+{
+    <p class="text-success">@TempData["SuccessMessage"]</p>
+}
+
+<p>
+    <a asp-action="Create">Create</a>
+</p>
+<table class="table" id="datatable"><!-- jQuery üzerinden id'yi kullanarak HTML table'ı DataTable'a dönüştüreceğiz -->
+    <thead>
+        <tr>
+            <th>
+
+                <!-- 1. yöntem: -->
+                @* Customer *@
+                <!-- 2. yöntem: -->
+                @Html.DisplayNameFor(model => model.CustomerId)
+                <!--
+                    OrderDTO sınıfında CustomerId için tanımlanmış başlığı (DisplayName)
+                    kullanarak Customer yazdırır. View modelinin tipini IEnumerable tanımladığımızdan
+                    OrderDTO tipi özelliklerini model delegesi üzerinden kullanabiliyoruz.
+                -->
+
+            </th>
+            <th>
+                
+                <!-- 1. yöntem: -->
+                @* Order Date *@
+                <!-- 2. yöntem: -->
+                @* @Html.DisplayNameFor(model => model.OrderDate) *@
+                <!-- 3. yöntem: -->
+                @Html.DisplayNameFor(model => model.OrderDateOutput)
+                <!--
+                    Kullanıcıya OrderDTO'daki formatlı sipariş tarihini göstermeliyiz, OrderDateOutput özelliği
+                    için başlık (DisplayName) OrderDTO sınıfında OrderDateOutput özelliğinde tanımlanmıştır.
+                -->
+
+            </th>
+            <th>
+
+                <!-- 1. yöntem: -->
+                @* @Html.DisplayNameFor(model => model.RequiredDate) *@
+                <!-- 2. yöntem: -->
+                @Html.DisplayNameFor(model => model.RequiredDateOutput)
+                <!--
+                    Kullanıcıya OrderDTO'daki formatlı gerekli teslim tarihini göstermeliyiz, RequiredDateOutput 
+                    özelliği için başlık (DisplayName) OrderDTO sınıfında RequiredDateOutput özelliğinde tanımlanmıştır.
+                -->
+
+            </th>
+            <th>
+
+                <!-- 1. yöntem: -->
+                @* @Html.DisplayNameFor(model => model.ShippedDate) *@
+                <!-- 2. yöntem: -->
+                @Html.DisplayNameFor(model => model.ShippedDateOutput)
+                <!--
+                    Kullanıcıya OrderDTO'daki formatlı teslim tarihini göstermeliyiz, ShippedDateOutput
+                    özelliği için başlık (DisplayName) OrderDTO sınıfında ShippedDateOutput özelliğinde tanımlanmıştır.
+                -->
+
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+		@foreach (var item in Model) {
+				<tr>
+					<td>
+
+						@Html.DisplayFor(modelItem => item.CustomerId)
+                        <!-- CustomerId verisini yazdırır. -->
+
+					</td>
+					<td>
+
+                        <!-- 1. yöntem: -->
+						@* @Html.DisplayFor(modelItem => item.OrderDate) *@
+                        <!-- 2. yöntem: -->
+                        @Html.DisplayFor(modelItem => item.OrderDateOutput)
+                        <!-- İngilizce formatlı tarih verisini yazdırır. -->
+
+					</td>
+					<td>
+
+                        <!-- 1. yöntem: -->
+						@* @Html.DisplayFor(modelItem => item.RequiredDate) *@
+                        <!-- 2. yöntem: -->
+                        @Html.DisplayFor(modelItem => item.RequiredDateOutput)
+                        <!-- İngilizce formatlı tarih verisini yazdırır. -->
+
+					</td>
+					<td>
+
+                        <!-- 1. yöntem: -->
+						@* @Html.DisplayFor(modelItem => item.ShippedDate) *@
+                        <!-- 2. yöntem: -->
+                        @Html.DisplayFor(modelItem => item.ShippedDateOutput)
+                        <!-- İngilizce formatlı tarih verisini yazdırır. -->
+
+					</td>
+					<td class="text-end"><!-- içerisindeki HTML tag'lerini sağa hizalar -->
+						<a asp-action="Details" asp-route-id="@item.OrderId">Details</a>&nbsp;|&nbsp;
+						<a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a>&nbsp;|&nbsp;
+
+                        @* Kayıt silme 1. yöntem: *@
+						@* <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a> *@
+                        @* Kayıt silme 2. yöntem: *@
+                        <a href="#" onclick="deleteOrder(@item.OrderId);" class="text-danger">Delete</a>
+
+					</td>
+				</tr>
+		}
+    </tbody>
+</table>
+
+
+
+@section Scripts {
+    @*
+        Her bir view'daki Scripts section'ı (bölümü) içeriği Views -> Shared -> _Layout.cshtml dosyasında
+		en altta RenderSectionAsync methoduna section adı ile aynı ada sahip string parametre gönderilmesi ile yazdırılır.
+        DataTables gibi Javascript - CSS kütüphaneleri wwwroot -> lib seçilip fare ile sağ tıklanarak Add -> Client-Side Library
+        tıklanıp örneğin DataTables için datatables araması yapılıp çıkan sonuç seçilerek ve DataTables web sitesi (https://datatables.net)
+        üzerinden hem kütüphane adı yazımı hem de versiyonu ile doğru kütüphane olduğu kontrol edilerek projeye eklenebilir.
+        DataTables kütüphanesi tüm view'larda kullanılmayacağı için _Layout view'ında eklemek yerine
+        sadece sipariş listeleme sayfasında kullanılacağı Views -> Orders -> Index view'ında Scripts section'ına
+        css ve js kütüphaneleri referansları eklenmelidir ve HTML table'ı DataTable'a dönüştürecek jQuery kodları yazılmalıdır.
+    *@
+    <link href="~/lib/datatables/css/jquery.datatables.min.css" rel="stylesheet" />
+    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+    <script>
+        $(function () {
+            $("#datatable").DataTable();
+        });
+    </script>
+
+
+
+    @* Kayıt silme 2. yöntem: AlertifyJS *@
+    @*
+        Sipariş silmek için ilgili siparişin Delete link'i tıklandığında siparişin id'sini aşağıdaki deleteOrder fonksiyonuna
+        parametre olarak gönderiyoruz ve AlertifyJS (https://alertifyjs.com) üzerinden bir konfirmasyon pop up'ının çıkmasını sağlıyoruz.
+        Eğer kullanıcı evet derse o zaman Orders controller'ındaki Delete get action'ına silinmek istenen mağazanın id'sini route değeri 
+        olarak ekleyip Javascript'te bir sayfanın yönlendirilmesini sağlayan window.location.href'e atıyoruz.
+    *@
+
+    <link href="/lib/AlertifyJS/css/alertify.min.css" rel="stylesheet" />
+    <script src="/lib/AlertifyJS/alertify.min.js"></script>
+
+    <script>
+        function deleteOrder(id) {
+            alertify.confirm(
+                "Warning!", // pop up'ın başlığı
+                "Are you sure you want to delete this order?", // pop up'taki mesaj
+                function () { // kullanıcı Yes butonuna tıkladığında çalışacak fonksiyon
+                    window.location.href = "/Orders/Delete/" + id; // silme işlemi için yönlendirdiğimiz Orders controller'ın Delete get action'ı
+                },
+                function () { // kullanıcı No butonuna tıkladığında çalışacak fonksiyon
+                    //alertify.error("Delete canceled."); // eğer istenirse error fonksiyonu üzerinden hata mesajı, success fonksiyonu üzerinden de
+                                                          // başarılı mesajı kullanıcıya gösterilebilir, burada mesaj göstermeyelim dedik
+                }
+            ).set('labels', { ok: 'Yes', cancel: 'No' }); // pop up'taki butonların Yes ve No şeklinde özelleştirilmeleri
+        }
+    </script>
+}
+

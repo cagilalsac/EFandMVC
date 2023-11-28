@@ -1,0 +1,54 @@
+﻿@* 
+    _Details partial view'ı Views -> Orders altında oluşturulduğundan sadece Orders
+    klasöründeki diğer view'lar veya OrdersController'ının action'ları üzerinden kullanılabilir.
+    Eğer bir partial view'ın tüm proje view veya controller action'larında kullanılması 
+    isteniyorsa Views -> Shared klasöründe oluşturulmalıdır.
+    Partial view'ların içerisinde ihtiyaç halinde Scripts section'ı yazılmamalıdır, 
+    partial view'ın kullanıldığı view'da yazılmalıdır.
+*@
+
+@model OrderDTO
+
+<dl class="row">
+
+    <!-- Sipariş entity (Order) üzerinden sipariş DTO (OrderDTO) özellikleri: -->
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.CustomerId)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.CustomerId)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.OrderDateOutput)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.OrderDateOutput)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.RequiredDateOutput)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.RequiredDateOutput)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.ShippedDateOutput)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.ShippedDateOutput)
+    </dd>
+
+    <!--
+        Sipariş entity'si (Order) ile ilişkili ürün entity'lerinin adlarının (Product -> ProductName)
+        DTO'daki (OrderDTO) ilgili string tipindeki özellik (ProductNamesOutput) üzerinden yazdırılması:
+    -->
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.ProductNamesOutput)
+    </dt>
+    <dd class="col-10">
+
+        @* Eğer string bir verinin içerisinde HTML tag'leri varsa HTML Raw Helper'ı kullanılmalıdır. *@
+        @Html.Raw(Model.ProductNamesOutput)
+
+    </dd>
+
+</dl>

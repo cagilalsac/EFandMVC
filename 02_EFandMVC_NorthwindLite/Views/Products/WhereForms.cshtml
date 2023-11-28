@@ -1,0 +1,109 @@
+﻿<h3>Products Filtering with Where Using And</h3>
+<div class="row">
+    <div class="col-5">
+
+        <!-- HTML Form -->
+        <!-- 
+            HTML form tag'i içerisinde kullanıcıdan alacağımız verilerin veri girişi için HTML tag'lerini
+            (input, textarea, select, vb.) tüm formda tekil olacak "name" HTML özelliği (attribute) üzerinden oluşturuyoruz. 
+            HTML form tag'ine "action" HTML attribute'u üzerinden kullanıcıdan alacağımız verilerin hangi 
+            URL'ye (Unified Resource Locator) gönderileceğini web uygulamamızın sanal yolunu 
+            (virtual path ki burada "/controller/action") kullanarak belirtiyoruz. 
+            Yine HTML form tag'ine bu verileri hangi method üzerinden ("get" veya "post") web sunucusuna göndereceğimizi söylüyoruz.
+            Methodu "get" olarak belirtmemize gerek yok çünkü eğer yazılmazsa default'u (varsayılan) "get" methodudur ve
+            bu method form verilerini bir query string üzerinden web sunucusuna gönderir. Örneğin,
+            "/Products/GetByWhereWithHttpGet?NameGet=Louisiana&UnitsInStockBeginGet=4&UnitsInStockEndGet=76".
+            Dolayısıyla client (kullanıcının kullandığı cihazın tarayıcısı, örneğin Chrome, Firefox, vb.) üzerinden veriler
+            server'a (web sunucusu) methodu "get" olan bir form HTML tag'i üzerinden query string olarak gönderilebileceği gibi
+            tarayıcının adres kısmında direkt query string olarak verilerin gönderileceği URL yazıldıktan sonra "?" ile başlanıp 
+            parametrelere "=" ile veriler atanarak, birden çok parametre için de paremetreler "&" ile ayrılarak gönderilebilir.
+            Son olarak da verileri gönderebilmek için type'ı submit olan bir input veya button HTML tag'i kullanarak buton oluşturuyoruz.
+            Eğer istenirse type'ı "reset" olan ve form verilerini sayfanın ilk döndüğü haline getiren bir buton da oluşturulabilir.
+        -->
+        <!-- 1. yöntem: -->
+        <!--<form action="/Products/GetByWhereWithHttpGet" method="get">-->
+        <!-- 2. yöntem: -->
+        <form action="/Products/GetByWhereWithHttpGet"><!-- default method "get" -->
+    
+            <!-- 
+                Label'a tıklandığında label tag'inin for attribute'u üzerinden hangi veri giriş tag'ine 
+                odaklanılmasını (focus) istiyorsak o tag'in id'sine aynı değeri veriyoruz.
+                Örnek filtreleme ilk verileri value üzerinden verilmiştir.
+            -->
+            <div class="mb-3 mt-3"><!-- mb-3: margin bottom 3 birim, mt-3: margin top 3 birim -->
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" class="form-control" id="name" name="NameGet" value="Louisiana" />
+            </div>
+
+            <!-- 
+                input tag'inin type attribute'u "number" yapılarak numeric up down ile sayısal veriler alınabilir. 
+                Eğer istenirse tag'ler Bootstrap'in "input-group" class'ına sahip bir div üzerinden
+                "input-group-text" class'ına sahip bir span ayracı üzerinden gruplanabilir.
+            -->
+            <div class="mb-3">
+                <label for="unitsinstock1" class="form-label">Units in Stock:</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="unitsinstock1" name="UnitsInStockBeginGet" value="4" />
+                    <span class="input-group-text">-</span>
+                    <input type="number" class="form-control" id="unitsinstock2" name="UnitsInStockEndGet" value="76" />
+                </div>
+            </div>
+
+            <!-- 
+                Butonlar için button veya input HTML tag'leri kullanılabilir,
+                form tag'i içerisinde kullanıldığında type'ının "submit" olması gerekir.
+                Type'ı "reset" olan bir buton oluşturulduğunda butona tıklanıldığında 
+                form'daki veriler ilk haline döner.
+            -->
+            <button type="submit" class="btn btn-success">Submit with Get</button>
+            &nbsp;&nbsp;&nbsp;    
+            <input type="reset" class="btn btn-warning" value="Reset" />
+
+        </form>
+
+    </div>
+</div>
+<hr />
+
+
+
+<h3>Products Filtering with Where Using IQueryable</h3>
+<div class="row">
+    <div class="col-5">
+
+        <!--
+            Aşağıdaki form'da method "post" olarak tanımlandığından form verileri Products controller'ının 
+            "HttpPost" olarak tanımlanmış GetByWhereWithHttpPost action'ına gönderilecektir.
+            Method "post" kullanıldığında form verileri query string üzerinden açık bir şekilde
+            web sunucusuna gönderilmez, istek (request) gövdesi (body) üzerinden gönderilir ve
+            genelde formlarda "post" methodu tercih edilir.
+            HTML'de ihtiyaca göre bir veya birden çok form kullanılabilir.
+        -->
+        <form action="/Products/GetByWhereWithHttpPost" method="post">
+        <!-- 
+            Methodu "post" olarak belirtmeliyiz ki controller action'ında "HttpPost" attribute'u (action method) 
+            tanımlanmış action'a veriler gönderilsin. 
+        -->
+            
+            <div class="mb-3 mt-3">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" class="form-control" id="name" name="NamePost" value="Louisiana" />
+            </div>
+            
+            <div class="mb-3">
+                <label for="unitsinstock1" class="form-label">Units in Stock:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="unitsinstock1" name="UnitsInStockBeginPost" value="4" />
+                    <span class="input-group-text">-</span>
+                    <input type="text" class="form-control" id="unitsinstock2" name="UnitsInStockEndPost" value="76" />
+                </div>
+            </div>
+           
+            <button type="submit" class="btn btn-primary">Submit with Post</button>
+            &nbsp;&nbsp;&nbsp;
+            <input type="reset" class="btn btn-info" value="Reset" />
+
+        </form>
+
+    </div>
+</div>

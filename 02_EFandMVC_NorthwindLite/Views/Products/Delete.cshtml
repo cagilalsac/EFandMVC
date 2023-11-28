@@ -1,0 +1,73 @@
+﻿@model Product
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3>Are you sure you want to delete this product?</h3>
+<div>
+    <h4>Product</h4>
+    <hr />
+
+    <h5>Product Information</h5>
+
+    <dl class="row">
+        <dt class="col-2">
+
+            <!-- DisplayNameFor HTML Helper'ı delege ile belirtilen özellik adı üzerinden HTML tag'i oluşturur. -->
+            @Html.DisplayNameFor(product => product.ProductId)
+
+        </dt>
+        <dd class="col-10">
+
+            <!-- DisplayFor HTML Helper'ı delege ile belirtilen özelliğin verisi için HTML tag'i oluşturur. -->
+            @Html.DisplayFor(product => product.ProductId)
+            
+        </dd>
+        <dt class="col-2">
+            @Html.DisplayNameFor(product => product.ProductName)
+        </dt>
+        <dd class="col-10">
+            @Html.DisplayFor(product => product.ProductName)
+        </dd>
+        <dt class="col-2">
+            @Html.DisplayNameFor(product => product.UnitPrice)
+        </dt>
+        <dd class="col-10">
+            @Html.DisplayFor(product => product.UnitPrice)
+        </dd>
+        <dt class="col-2">
+            @Html.DisplayNameFor(product => product.UnitsInStock)
+        </dt>
+        <dd class="col-10">
+            @Html.DisplayFor(product => product.UnitsInStock)
+        </dd>
+        <dt class="col-2">
+            @Html.DisplayNameFor(product => product.Discontinued)
+        </dt>
+        <dd class="col-10">
+
+            <!-- 
+                DisplayFor HTML Helper'ı ASP.NET Core MVC'deki hazır template'ları kullanarak delege üzerinden 
+                kullanılan özelliğin tipine göre HTML tag'inin type özelliğini belirleyerek oluşturur. 
+                Discontinued bool olduğu için otomatik olarak disabled bir check box oluşturacaktır.
+            -->
+            @Html.DisplayFor(product => product.Discontinued)
+
+        </dd>
+    </dl>
+    <hr />
+    
+    <!-- Aşağıdaki form'un asp-action Tag Helper'ı ile Products controller'ının "Delete" ActionName'i 
+        üzerinden yolu (route) değiştirilmiş DeleteConfirmed post action'ına gizli (hidden) bir HTML input tag'i 
+        ile ID değerini göndermeliyiz (submit) ki action'da gönderilen ID değerindeki ürün veritabanından silinebilsin.
+    -->
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ProductId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="GetList">Back to Product List</a>
+    </form>
+
+</div>

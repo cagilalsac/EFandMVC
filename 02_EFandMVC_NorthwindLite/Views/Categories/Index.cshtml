@@ -1,0 +1,87 @@
+﻿@model IEnumerable<CategoryDTO>
+@*Generated from Custom Template.*@
+@*Model namespace using directive should be added to _ViewImports.cshtml.*@
+
+@{
+    ViewData["Title"] = "Category List";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@* Kolleksiyon kayıt sayısı kontrolü 1. yöntem: *@
+@* @if (Model is not null && Model.Count() > 0) *@
+@* Kolleksiyon kayıt sayısı kontrolü 2. yöntem: *@
+@if (Model is not null && Model.Any()) // eğer view'ın kolleksiyon modelinde en az bir kayıt varsa
+                                       // yeni kayıt oluştur link'i ile kolleksiyon elemanlarını
+                                       // içeren tabloyu yazdır
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+
+    <p>
+
+        @* kategori sayısının atanması *@
+        @{
+            string count = "1 category found"; // count değişkeninin değeri aşağıda istenilen yerde kullanılabilir
+            if (Model.Count() > 1)
+                count = Model.Count() + " categories found";
+        }
+
+        @* kategori sayısının yazdırılması *@
+        @count
+
+    </p>
+
+    <!-- 
+        eğer istenirse scroll bar üzerinden bir div'in içeriği aşağıdaki style 
+        HTML attribute'u üzerinden gezilebilir
+    -->
+    <div style="overflow-y: auto; height: 325px;">
+
+        <table class="table">
+            <thead>
+                <tr>
+
+                    <!-- 
+                        eğer istenirse sütun genişlikleri aşağıdaki style
+                        HTML attribute'u üzerinden ayarlanabilir
+                    -->
+                    <th style="width: 50%;">
+                        @Html.DisplayNameFor(model => model.CategoryName)
+                    </th>
+
+                    <th style="width: 20%;">
+                        @Html.DisplayNameFor(model => model.ProductsCountOutput)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CategoryName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProductsCountOutput)
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-id="@item.CategoryId">Details</a>&nbsp;|&nbsp;
+                            <a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a>&nbsp;|&nbsp;
+                            <a asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+}
+else
+{
+    <p>No categories found</p>
+}
+

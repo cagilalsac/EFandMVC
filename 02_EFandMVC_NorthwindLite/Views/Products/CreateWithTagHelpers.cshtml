@@ -1,0 +1,147 @@
+﻿@* 1. yöntem: *@
+@* @model _02_EFandMVC_NorthwindLite.Entities.Product *@
+@* 2. yöntem: *@
+@model Product
+@* 
+    Bu yöntem üzerinden namespace kullanmadan model sınıfını deklare edebilmek için sınıfın namespace'i
+    Views -> _ViewImports.cshtml altına tanımlanmalıdır.
+*@
+
+@* 
+    View'ın modelini "@model" üzerinden deklare ediyoruz ki aşağıdaki tag helper'larda model özellikleri kullanılabilsin.
+    Bu view'da veriler Product modeli üzerinden kullanıcıdan alınacak ve ProductsController'daki Create post action'ına 
+    bu model parametre olarak gönderilecek. 
+*@
+
+@{
+    @* ViewData["Title"] Views -> Shared -> _Layout.cshtml'in head tag'indeki title tag'ine burada atanan değeri taşır. *@
+    ViewData["Title"] = "Create New Product";
+}
+
+<!-- Eğer istenirse yukarıda atanan ViewData["Title"] bu view'da herhangi bir yerde kullanılabilir, örneğin başlıkta. -->
+<h1>@ViewData["Title"]</h1>
+
+<h4>Product</h4>
+<hr />
+
+<!-- Tag Helpers -->
+<!--
+    Tag Helper'lar ASP.NET Core MVC kütüphanesinde HTML tag'lerini view'a gönderdiğimiz 
+    model üzerinden oluşturmamızı sağlar. Bazı HTML tag'lerinde "asp-for" ile kullanılırlar.
+    input asp-for Tag Helper'ı belirtilen model özelliğinin veri tipi üzerinden otomatik
+    olarak type HTML attribute'unu oluşturur, örneğin string için text box, int için numeric up down vb.
+    Aşağıda Tag Helper'lar ve oluşturacakları HTML elemanları görülebilir.
+-->
+
+<!-- HTML -->
+@* <form action="/Products/Create" method="post"> *@
+<!-- Tag Helper 1. yöntem: form Tag Helper'ının default (varsayılan) methodu post'tur. -->
+@* <form asp-action="Create" asp-controller="Products" method="post"> *@
+<!-- Tag Helper 2. yöntem: form methodu default post olduğundan yazmaya gerek yoktur. -->
+@* <form asp-action="Create" asp-controller="Products"> *@
+<!-- Tag Helper 3. yöntem: Create view'ı Views -> Products klasöründe olduğundan controller belirtmeye gerek yoktur. -->
+<form asp-action="Create">
+
+    <!-- 
+        Tag Helper: asp-validation-summary Tag Helper'ı "All" yapılmalıdır ki view'a gönderilen model
+        özelliklerindeki data annotation'lar (C# attribute'ları) üzerinden validasyon sonucu yazdırılabilsin. 
+        Bu Tag Helper kırmızı renkli bir div HTML tag'i içerisinde validasyon sonucunu gösterir.
+    -->
+    <!-- Tag Helper 1. yöntem -->
+    @* <div asp-validation-summary="ModelOnly" class="text-danger"></div> *@
+    <!-- Tag Helper 2. yöntem -->
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row mb-3">
+
+        <!-- HTML -->
+        @* <label class="col-2 col-form-label">ProductName</label> *@
+        <!-- Tag Helper: view modelindeki ProductName özelliği için bir satır yukarıdaki HTML tag'ini oluşturur. -->
+        <label asp-for="ProductName" class="col-2 col-form-label"></label>
+
+        <div class="col-5">
+
+            <!-- HTML -->
+            @* <input class="form-control" type="text" name="ProductName" /> *@
+            <!-- Tag Helper: view modelindeki ProductName özelliği için bir satır yukarıdaki HTML tag'ini "name" HTML attribute'u ile oluşturur. -->
+            <input asp-for="ProductName" class="form-control" /><!-- ProductName'in tipi string olduğundan text box oluşacak -->
+
+            <!-- 
+                Tag Helper: view modelindeki ProductName özelliği için data annotation'ları üzerinden validasyon sonucunu 
+                kırmızı bir span HTML tag'inde yazdırır.
+            -->
+            <span asp-validation-for="ProductName" class="text-danger"></span>
+
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label asp-for="CategoryId" class="col-2 col-form-label"></label>
+        <div class="col-5">
+
+             <!-- HTML -->
+            @* <select class="form-select" name="CategoryId">
+                <option value="">-- Select --</option>
+                <option value="1">Category 1</option>
+                <option value="2">Category 2</option>
+                <!-- ... -->
+            </select> *@
+            <!-- 
+                Tag Helper: view modelindeki CategoryId özelliği için bir yukarıdaki HTML tag'ini "name" HTML attribute'u ile oluşturur. 
+                asp-items üzerinden Products controller'ının Create get action'ında atadığımız ViewBag üzerinden kategoriler 
+                drop down list içerisine doldurulur, eğer istenirse value "" olan bir seçiniz (select) option tag'i de eklenebilir.
+            -->
+            <select asp-for="CategoryId" class ="form-select" asp-items="ViewBag.Categories">
+                <option value="">-- Select --</option>
+            </select>
+
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label asp-for="UnitPrice" class="col-2 col-form-label"></label>
+        <div class="col-5">
+
+            <!-- 
+                Tag Helper: eğer istenirse özellikle input'un type'ı belirtilebilir, bir aşağıdaki satır üzerinden 
+                UnitPrice özelliğinin veri tipi ne olursa olsun mutlaka text box oluşturulacaktır. 
+            -->
+            <input asp-for="UnitPrice" class="form-control" type="text" />
+
+            <span asp-validation-for="UnitPrice" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label asp-for="UnitsInStock" class="col-2 col-form-label"></label>
+        <div class="col-5">
+            <input asp-for="UnitsInStock" class="form-control" /><!-- UnitsInStock'un tipi short olduğundan numeric up down oluşacak -->
+            <span asp-validation-for="UnitsInStock" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row mb-3">
+
+        <div class="offset-2 col-5">
+        <!-- offset-2: yukarıdaki label'larda soldan 2 birim içerisinde başlıkları yazdırdığımızdan bu div içerisinde soldan 2 birim boşluk bırakılmasını sağlar. -->
+                
+            <!-- 
+                HTML: form verileri form'da belirtilen post action'ına "submit" type'ına sahip butona tıklandığında gönderilir
+                ve ilgili controller action'ında veritabanına ekleme işlemi gerçekleştirilir.
+            -->
+            <input type="submit" value="Create Product" class="btn btn-primary" />
+
+            &nbsp;&nbsp;&nbsp;
+
+            <!-- HTML: istenirse form verilerini ilk sayfanın geldiği hale getiren type'ı "reset" olan bir buton da eklenebilir. -->
+            <button type="reset" class="btn btn-outline-primary">Clear</button>
+
+            &nbsp;&nbsp;&nbsp;
+
+            <!-- HTML: eğer kullanıcı yeni ürün eklemekten vazgeçerse aşağıdaki link üzerinden ürün listesine gidebilir. -->
+            @* <a href="/Products/GetList">Back to Product List</a> *@
+            <!-- Tag Helper 1. yöntem -->
+            @* <a asp-action="GetList" asp-controller="Products">Back to Product List</a> *@
+            <!-- Tag Helper 2. yöntem: Create view'ı Views -> Products klasöründe olduğundan controller belirtmeye gerek yoktur. -->
+            <a asp-action="GetList">Back to Product List</a>
+
+        </div>
+    </div>
+</form>

@@ -1,0 +1,53 @@
+﻿@* 
+    bu partial view'ı hem Details hem de Delete view'larında kullanıp
+    kullanıcı detay verilerini User tipindeki model üzerinden yazdırıyoruz
+*@
+
+@model User
+
+<h4>User</h4>
+<hr />
+<dl class="row">
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.UserName)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.UserName)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.Password)
+    </dt>
+    <dd class="col-10">
+        @* Şifreyi açık bir şekilde göstermemek için: *@
+        @* @Html.DisplayFor(model => model.Password) *@
+        @(new string('*', Model.Password.Length))
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.IsActive)
+    </dt>
+    <dd class="col-10">
+        @* Veriyi formatlamak için: *@
+        @* @Html.DisplayFor(model => model.IsActive) *@
+        @(Model.IsActive ? "Active" : "Not Active")
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.BirthDate)
+    </dt>
+    <dd class="col-10">
+        @* Veriyi formatlamak için: *@
+        @* @Html.DisplayFor(model => model.BirthDate) *@
+        @(Model.BirthDate.ToString("MM/dd/yyyy"))
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.Sex)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.Sex)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.Role)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.Role.Name)
+    </dd>
+</dl>

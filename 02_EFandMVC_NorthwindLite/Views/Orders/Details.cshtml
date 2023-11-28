@@ -1,0 +1,31 @@
+﻿@model OrderDTO
+@*Generated from Custom Template.*@
+@*Model namespace using directive should be added to _ViewImports.cshtml.*@
+@*
+    View'ın modeli olarak Order entity'si değil Orders controller'ının Details 
+    action'ından dönen OrderDTO DTO tipi kullanılmalıdır.
+*@
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>Order</h4>
+    <hr />
+    
+    @* Partial view kullanımı 1. yöntem: HTML Helper *@
+    @* @await Html.PartialAsync("_Details", Model) *@
+    @* Partial view kullanımı 2. yöntem: Tag Helper *@
+    <partial name="_Details" model="Model" />
+
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.OrderId">Edit</a>&nbsp;|&nbsp;
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+

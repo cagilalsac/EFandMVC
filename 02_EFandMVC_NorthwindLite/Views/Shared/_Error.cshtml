@@ -1,0 +1,23 @@
+﻿@* 
+    Views -> Shared klasöründe olduğu için tüm view ve controller action'ları üzerinden 
+    kullanılabilecek partial view 
+*@
+
+@model string // controller action'larından dönecek string tipindeki mesaj modeli
+
+@{
+    ViewData["Title"] = "Error";
+}
+
+@* önce başlığı yazdırıyoruz *@
+<h1 class="text-danger">Error.</h1>
+
+@* daha sonra eğer model verisi yoksa genel hata mesajını yazdırıyoruz *@
+@if (string.IsNullOrWhiteSpace(Model))
+{
+    <h2 class="text-danger">An error occurred while processing your request.</h2>
+}
+else @* model verisi varsa model verisini yazdırıyoruz *@
+{
+    <h2 class="text-danger">@Model</h2>
+}

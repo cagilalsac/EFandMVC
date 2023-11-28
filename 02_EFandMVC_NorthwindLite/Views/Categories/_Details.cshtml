@@ -1,0 +1,28 @@
+﻿@*
+    _Details partial view'ı Views -> Categories altında oluşturulduğundan sadece Categories
+    klasöründeki diğer view'lar veya CategoriesController'ının action'ları üzerinden kullanılabilir.
+*@
+
+@model CategoryDTO
+
+<dl class="row">
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.CategoryName)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.CategoryName)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.Description)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.Description)
+    </dd>
+
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.ProductNamesOutput)
+    </dt>
+    <dd class="col-10">
+        @Html.Raw(Model.ProductNamesOutput)
+    </dd>
+</dl>

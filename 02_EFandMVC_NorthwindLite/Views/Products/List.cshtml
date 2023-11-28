@@ -1,0 +1,129 @@
+﻿@* View'larda kullanılan Razor, C# ile birlikte HTML kullanmamızı sağlar. *@
+
+@* Razor comment (yorum) syntax'i *@
+
+@* 1. yöntem: *@
+@*@model List<_02_EFandMVC_NorthwindLite.Entities.Product>*@
+@*
+    Products Controller'ının Index action'ında listeyi List<Product> olarak çektiğimiz ve bu view'da 
+    model objesi olarak kullanacağımız için modelin tipini bu satırdaki şekilde namespace'i üzerinden belirtiyoruz.
+*@
+
+@* 2. yöntem: *@
+@* @model List<Product> *@
+@*
+    View'da kullanacağımız model objesinin tipini namespace olmadan belirtebilmek için Views klasörü altındaki 
+    _ViewImports.cshtml'de using ile Product class'ının namespace'ini eklememiz gerekmektedir, 
+    bu şekilde kullanım tercih edilmelidir.
+*@
+
+@* 3. yöntem: *@
+@model IEnumerable<Product>
+@*
+    Kolleksiyon modeli kullanılan view'larda modelin tipi List yerine IEnumerable üzerinden tanımlanırsa daha iyi olur.
+*@
+
+<h1>Products</h1>
+<hr />
+
+<div class="row">
+    <div class="col-6 text-start">
+        <p>
+            @* Products controller'ının GetByWhere action'ını çağıran Where link'i. *@
+            <a href="/Products/GetByWhere">Where</a>
+        </p>
+    </div>
+    <div class="col-6 text-end">
+        <p>
+            @* Products controller'ının Create action'ını çağıran Create New Product link'i. *@
+            <a href="/Products/Create">Create New Product</a>
+        </p>
+    </div>
+</div>
+
+@* 
+    List of Product tipindeki modelimiz üzerinden Count özelliğini çağırarak eleman sayısını aşağıdaki şekilde yazdırabiliriz. 
+    Razor üzerinden @ kullanarak C# kodları yazabiliriz ki burada @Model.Count yazdık.
+*@
+<p><b>Records Count: @Model.Count()</b></p>
+
+<table class="table">
+    <thead>
+        <tr>
+
+            @* 
+                Genelde listelemede özet bilgiler sunulur bu yüzden aşağıdaki bazı 
+                sütunlar comment'e alınmıştır.
+            *@
+            <th>ID</th>
+            <th>Name</th>
+            @*<th>Quantity / Unit</th>*@
+            <th>Unit Price</th>
+            <th>Units in Stock</th>
+            @*<th>Units on Order</th>*@
+
+            @* Aşağıdaki ürün detayı link'lerinin td tag'i için boş bir th oluşturuyoruz. *@
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @* 
+            Model yani ürün listesindeki her bir elemanı tablo satırı olarak döngüyle yazdırıyoruz.
+            Razor üzerinden @ kullanarak C# kodları yazabiliriz ki burada foreach yazdık.
+        *@
+        @foreach (Product product in Model)
+        {
+            <tr>
+
+                @*
+                    Yine Razor üzerinden @ kullanarak C# kodu üzerinden döngüdeki ürün elemanının
+                    özelliklerine ulaşabiliyoruz ve td tag'i içerisine özellik verilerini yazdırabiliyoruz.
+                    Genelde listelemede özet bilgiler sunulur bu yüzden aşağıdaki bazı
+                    sütunlar comment'e alınmıştır.
+                *@
+                
+                <td>@product.ProductId</td>
+                <td>@product.ProductName</td>
+                @*<td>@product.QuantityPerUnit</td>*@
+                <td>@product.UnitPrice</td>
+                <td>@product.UnitsInStock</td>
+                @*<td>@product.UnitsOnOrder</td>*@
+
+                <td class="text-end"><!-- içerisindeki HTML tag'lerini sağa hizalar -->
+                    @*  
+                        1. yöntem:
+                        Kullanıcı aşağıdaki link'e tıkladığında id'yi ProductId üzerinden query string
+                        ile Products controller'ının GetDetails aksiyonuna gönderiyoruz ki bu aksiyonda
+                        id parametresi üzerinden alınabilsin ve ürün detayı dönülebilsin.
+                    *@
+                    @*<a href="/Products/GetByFind?id=@product.ProductId">Find</a>*@
+                    
+                    @* 
+                        2. yöntem: 
+                        MVC controller ve action'larının çağrılması için projenin Program.cs dosyası altında
+                        app.MapControllerRoute(
+                            name: "default",
+                            pattern: "{controller=Home}/{action=Index}/{id?}");
+                        tanımı bulunmaktadır. Herhangi bir aksiyon "controller adı"/"action adı"/"opsiyonel id"
+                        üzerinden çağrılabilir. id ? ile opsyionel tanımlandığından yazmak her zaman zorunlu değildir,
+                        eğer aksiyon yazılmazsa belirtilen controller'ın Index aksiyonu, controller yazılmazsa
+                        Home controller'ın Index aksiyonu çağrılır. Bu yapıya MVC route (yol) tanımı denir.
+                    *@
+                    <a href="/Products/GetByFind/@product.ProductId">Find</a>
+
+                    &nbsp;&nbsp; 
+                    <a href="/Products/GetBySingle/@product.ProductId">Single</a>
+
+                    &nbsp;|&nbsp;
+                    <a href="/Products/Edit/@product.ProductId">Edit</a>
+                    &nbsp;&nbsp;
+                    <a href="/Products/Delete/@product.ProductId">Delete</a>
+
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,244 @@
+﻿@model Product
+
+@* 
+    View'ın modelini "@model" üzerinden deklare ediyoruz ki aşağıdaki HTML helper'larda model özellikleri kullanılabilsin.
+    Bu view'da veriler Product modeli üzerinden kullanıcıdan alınacak ve ProductsController'daki Edit post action'ına 
+    bu model parametre olarak gönderilecek. 
+*@
+
+@{
+    ViewData["Title"] = "Edit Existing Product";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>Product</h4>
+<hr />
+
+<!-- HTML Helpers -->
+<!--
+    HTML Helper'lar ASP.NET Core MVC kütüphanesinde HTML tag'lerini view'a gönderdiğimiz 
+    model üzerinden oluşturmamızı sağlar. Bunun için For ile biten HTML Helper'lar kullanılır.
+    EditorFor HTML Helper'ı belirtilen model özelliğinin veri tipi üzerinden otomatik
+    olarak type HTML attribute'unu oluşturur, örneğin string için text box, int için numeric up down vb.
+    Aşağıda HTML Helper'lar ve oluşturacakları HTML elemanları görülebilir.
+-->
+
+<!-- HTML -->
+@* <form action="/Products/Edit" method="post"> *@
+<!-- HTML Helper 1. yöntem: BeginForm HTML Helper'ının default (varsayılan) methodu post'tur. -->
+@* 
+    @using (Html.BeginForm("Edit", "Products", FormMethod.Post))
+    { 
+*@
+<!-- HTML Helper 2. yöntem: form methodu default post olduğundan yazmaya gerek yoktur. -->
+@*
+    @using (Html.BeginForm("Edit", "Products"))
+    {
+*@
+<!-- HTML Helper 3. yöntem: Edit view'ı Views -> Products klasöründe olduğundan controller ve action'ı belirtmeye gerek yoktur. -->
+@using (Html.BeginForm())
+{
+
+    <!-- 
+        Güncelleme işleminde veritabanından ID üzerinden kayıt çekebilmek ve güncelleyebilmek için mutlaka 
+        gizli (hidden) olarak tanımlanmış bir input HTML tag'inde modeldeki ID değerini saklamalıyız.
+    -->
+    <!-- HTML -->
+    @* <input type="hidden" value="7" /> *@
+    <!-- Tag Helper -->
+    @* <input asp-for="ProductId" type="hidden" /> *@
+    <!-- HTML Helper -->
+    @Html.HiddenFor(product => product.ProductId)
+
+    <!-- 
+        HTML Helper: ValidationSummary HTML Helper'ı "false" parametresi ile kullanılmalıdır ki
+        view'a gönderilen model özelliklerindeki data annotation'lar (C# attribute'ları) üzerinden 
+        validasyon sonucu yazdırılabilsin. Bu HTML Helper kırmızı renkli bir div HTML tag'i içerisinde 
+        validasyon sonucunu gösterir. "class" başında "at" kullanarak C#'ta reserved word (anahtar kelime) 
+        olan class'ı escape'leyerek CSS class'ı belirtiyoruz. HTML Helper'larda ihtiyaç duyulmayan
+        parametreler null gönderilebilir ve böylece istenilen method imzası kullanılabilir.
+    -->
+    <!-- HTML Helper 1. yöntem -->
+    @* @Html.ValidationSummary(true, null, new { @class = "text-danger" }) *@
+    <!-- HTML Helper 2. yöntem -->
+    @Html.ValidationSummary(false, null, new { @class = "text-danger" })
+
+    <div class="row mb-3">
+
+        <!-- HTML -->
+        @* <label class="col-2 col-form-label">ProductName</label> *@
+        <!-- 
+            HTML Helper 1. yöntem: view modelindeki ProductName özelliği için bir satır yukarıdaki HTML tag'ini oluşturur. 
+            DisplayNameFor HTML helper'ı ASP.NET Core MVC'deki hazır template'ları (şablon) kullanır bu yüzden class
+            HTML attribute'u parametre olarak kullanılamaz.
+        -->
+        @* @Html.DisplayNameFor(product => product.ProductName) *@
+        <!--
+            HTML Helper 2. yöntem: view modelindeki ProductName özelliği için bir satır yukarıdaki HTML tag'ini 
+            HTML attribute'ları da kullanılabilecek şekilde oluşturur.
+        -->
+        @Html.LabelFor(product => product.ProductName, new { @class = "col-2 col-form-label" })
+
+        <div class="col-5">
+
+            <!-- HTML -->
+            @* <input class="form-control" type="text" name="ProductName" /> *@
+            <!-- 
+                HTML Helper 1. yöntem: view modelindeki ProductName özelliği için bir satır yukarıdaki HTML tag'ini "name" HTML attribute'u 
+                ile DisplayFor'da olduğu gibi ASP.NET Core MVC'deki hazır template'ları kullanarak delege üzerinden kullanılan özelliğin tipine göre
+                HTML tag'inin type özelliğini belirleyerek oluşturur. EditorFor'da da HTML attribute'ları parametre olarak kullanılamaz.
+            -->
+            @* @Html.EditorFor(product => product.ProductName)<!-- ProductName'in tipi string olduğundan text box oluşacak --> *@
+            <!-- 
+                HTML Helper 2. yöntem: view modelindeki ProductName özelliği için bir satır yukarıdaki HTML tag'ini 
+                HTML attribute'ları da kullanılabilecek şekilde ve type HTML attribute'unu da "text" olarak oluşturur.
+            -->
+            @Html.TextBoxFor(product => product.ProductName, new { @class = "form-control" })
+
+            <!-- 
+                HTML Helper: view modelindeki ProductName özelliği için data annotation'ları üzerinden validasyon sonucunu
+                kırmızı bir span HTML tag'inde yazdırır.
+            -->
+            @Html.ValidationMessageFor(product => product.ProductName, null, new { @class = "text-danger" })
+
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(product => product.CategoryId, new { @class = "col-2 col-form-label" })
+        <div class="col-5">
+
+             <!-- HTML -->
+            @* <select class="form-select" name="CategoryId">
+                <option value="">-- Select --</option>
+                <option value="1" selected>Category 1</option>
+                <option value="2">Category 2</option>
+                <!-- ... -->
+            </select> *@
+            <!-- 
+                HTML Helper: view modelindeki CategoryId özelliği için bir yukarıdaki HTML tag'ini "name" HTML attribute'u ile oluşturur. 
+                İkinci parametre üzerinden Products controller'ının Edit get action'ında atadığımız ViewBag üzerinden kategoriler 
+                orijinal tipi olan SelectList'e cast edilerek drop down list içerisine doldurulur, eğer istenirse value "" olan bir 
+                seçiniz (select) option tag'i için de üçüncü parametre gönderilebilir.
+            -->
+            @Html.DropDownListFor(product => product.CategoryId, ViewBag.Categories as SelectList, "-- Select --", new { @class = "form-select" })
+
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(product => product.UnitPrice, new { @class = "col-2 col-form-label" })
+        <div class="col-5">
+            @Html.TextBoxFor(product => product.UnitPrice, new { @class = "form-control" })
+            @Html.ValidationMessageFor(product => product.UnitPrice, null, new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(product => product.UnitsInStock, new { @class = "col-2 col-form-label" })
+        <div class="col-5">
+
+            <!-- 
+                Eğer istenirse type HTML attribute'u ile HTML input tag'inin tipi özellikle belirtilebilir. 
+                Aşağıdaki şekilde bir numeric up down input HTML tag'i oluşturulur.
+            -->
+            @Html.TextBoxFor(product => product.UnitsInStock, new { @class = "form-control", type = "number" })
+
+            @Html.ValidationMessageFor(product => product.UnitsInStock, null, new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="offset-2 col-5">
+    
+            <!-- Modelin Discontinued bool özelliği için CheckBoxFor HTML helper'ını kullanıyoruz: -->
+            <div class="form-check">
+
+                <!-- HTML: -->
+                @* 
+                    <input type="checkbox" class="form-check-input" />
+                    <label class="form-check-label">
+                        Discontinued
+                    </label> 
+                *@
+                <!-- HTML Helper: -->
+                @Html.CheckBoxFor(product => product.Discontinued, new { @class = "form-check-input" })
+                @Html.LabelFor(product => product.Discontinued, new { @class = "form-check-label" })
+
+            </div>
+
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="offset-2 col-5">
+                
+            <!-- 
+                HTML: form verileri form'da belirtilen post action'ına "submit" type'ına sahip butona tıklandığında gönderilir
+                ve ilgili controller action'ında veritabanında güncelleme işlemi gerçekleştirilir.
+            -->
+            <input type="submit" value="Update Product" class="btn btn-info" />
+
+            &nbsp;&nbsp;&nbsp;
+
+            <!-- HTML: istenirse form verilerini ilk sayfanın geldiği hale getiren type'ı "reset" olan bir buton da eklenebilir. -->
+            <button type="reset" class="btn btn-outline-info text-black">Clear</button>
+
+            &nbsp;&nbsp;&nbsp;
+
+            <!-- HTML: eğer kullanıcı ürün güncellemekten vazgeçerse aşağıdaki link üzerinden ürün listesine gidebilir. -->
+            @* <a href="/Products/GetList">Back to Product List</a> *@
+            <!-- HTML Helper 1. yöntem -->
+            @* @Html.ActionLink("Back to Product List", "GetList", "Products") *@
+            <!-- HTML Helper 2. yöntem: Edit view'ı Views -> Products klasöründe olduğundan controller belirtmeye gerek yoktur. -->
+            @Html.ActionLink("Back to Product List", "GetList")
+
+            &nbsp;&nbsp;&nbsp;
+
+            <!-- 
+                View modelinin ID'sini Products controller'ının GetBySingle action'ına id parametresi için
+                ActionLink HTML Helper'ının en son route values parametresi olarak anonymous (anonim yani 
+                herhangi bir class'ı olmayan ve özelliklerinin dinamik belirlendiği) tip olarak 
+                id özelliğine view modelinin ID'si atandıktan sonra gönderilerek link'e tıklandığında 
+                view modelinin ID'si üzerinden düzenlenen ürünün detay sayfasının gelmesi sağlanabilir. 
+                Tag Helper kullanılırsa view modelinin ID'si asp-route üzerinden
+                yönlendirilmek istenen action'ın parametresi ile aynı ad (id) üzerinden atanmalıdır.
+            -->
+            <!-- HTML Helper: 1. yöntem -->
+            @* @Html.ActionLink("Product Details", "GetBySingle", "Products", new { id = Model.ProductId }) *@
+            <!-- Tag Helper: 2. yöntem -->
+            <a asp-action="GetBySingle" asp-route-id="@Model.ProductId">Product Details</a>
+
+        </div>
+    </div>
+
+@* </form> *@
+}
+@* 
+    Alternatif olarak using kullanmadan Html.BeginForm methodu kullanılabilir ancak bu durumda 
+    form HTML tag'inin kapanışı için Html.EndForm methodu kullanılmalıdır. 
+*@
+
+@*
+    ASP.NET Core MVC'deki Genel Kullanılan HTML Helper'lar:
+    Html.TextBox
+    Html.TextBoxFor
+    Html.Password
+    Html.PasswordFor
+    Html.TextArea
+    Html.TextAreaFor
+    Html.CheckBox
+    Html.CheckBoxFor
+    Html.RadioButton
+    Html.RadioButtonFor
+    Html.DropDownList
+    Html.DropDownListFor
+    Html.ListBox
+    Html.ListBoxFor
+    Html.Hidden
+    Html.HiddenFor
+    Html.Editor
+    Html.EditorFor
+    Html.Display
+    Html.DisplayFor
+    Html.Label
+    Html.LabelFor
+    Html.ActionLink
+    Html.BeginForm (isteğe göre using ile isteğe göre de using kullanılmadan Html.EndForm ile birlikte kullanılabilir)
+*@

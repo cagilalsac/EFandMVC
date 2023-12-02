@@ -3,6 +3,18 @@
 -- Veritabanı entity ve database context'teki DbSet'ler üzerinden Entity Framework Code First
 -- yaklaşımı, ilk veriler de projedeki Db controller'ın Seed action'ı üzerinden oluşturulmalıdır.
 
+use master
+go
+if exists (select name from sys.databases where name = 'UMSDB')
+begin
+	alter database UMSDB set single_user with rollback immediate
+	drop database UMSDB
+end
+go
+create database UMSDB
+go
+use UMSDB
+go
 /****** Object:  Table [dbo].[Roles]    Script Date: 28.11.2023 18:44:54 ******/
 SET ANSI_NULLS ON
 GO
